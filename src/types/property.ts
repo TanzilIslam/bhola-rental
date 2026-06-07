@@ -22,6 +22,7 @@ export interface PropertyFormData {
   title: string;
   description: string;
   type: PropertyType;
+  status: PropertyStatus;
   price: number;
   location: string;
   bedrooms: number;

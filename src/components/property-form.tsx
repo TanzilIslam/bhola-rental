@@ -45,9 +45,20 @@ export default function PropertyForm() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: PropertyFormValues) => {
-    console.log("Property submitted:", data);
-    toast.success("Property saved successfully!");
+  const onSubmit = async (data: PropertyFormValues) => {
+    try {
+      const res = await fetch("/api/listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const listing = await res.json();
+      console.log("Listing created:", listing);
+      toast.success("Property saved successfully!");
+    } catch (err) {
+      console.error("Submit error:", err);
+      toast.error("Failed to save property.");
+    }
   };
 
   return (
