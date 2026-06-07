@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import * as listingService from "@/services/listing.service";
 import type { PropertyFormData } from "@/types/property";
 
@@ -13,5 +14,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as PropertyFormData;
   const listing = listingService.create(body);
+  revalidatePath("/");
+  revalidatePath(`/properties/${listing.slug}`);
   return NextResponse.json(listing, { status: 201 });
 }
