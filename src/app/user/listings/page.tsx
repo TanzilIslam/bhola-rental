@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getAll } from "@/services/listing.service";
 
-export default function UserListingsPage() {
-  const listings = getAll();
+export default async function UserListingsPage() {
+  const listings = await getAll();
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

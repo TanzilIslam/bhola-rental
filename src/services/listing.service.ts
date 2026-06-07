@@ -11,20 +11,20 @@ function toSlug(title: string, id: string): string {
   return `${base}-${id.slice(0, 8)}`;
 }
 
-export function getAll(): Property[] {
+export async function getAll(): Promise<Property[]> {
   return readListings();
 }
 
-export function getById(id: string): Property | undefined {
-  return readListings().find((p) => p.id === id);
+export async function getById(id: string): Promise<Property | undefined> {
+  return (await readListings()).find((p) => p.id === id);
 }
 
-export function getBySlug(slug: string): Property | undefined {
-  return readListings().find((p) => p.slug === slug);
+export async function getBySlug(slug: string): Promise<Property | undefined> {
+  return (await readListings()).find((p) => p.slug === slug);
 }
 
-export function create(data: PropertyFormData): Property {
-  const listings = readListings();
+export async function create(data: PropertyFormData): Promise<Property> {
+  const listings = await readListings();
   const id = uuidv4();
   const listing: Property = {
     ...data,
@@ -35,30 +35,30 @@ export function create(data: PropertyFormData): Property {
     createdAt: new Date().toISOString(),
   };
   listings.push(listing);
-  writeListings(listings);
+  await writeListings(listings);
   return listing;
 }
 
-export function update(id: string, data: Partial<PropertyFormData>): Property {
-  const listings = readListings();
+export async function update(id: string, data: Partial<PropertyFormData>): Promise<Property> {
+  const listings = await readListings();
   const index = listings.findIndex((p) => p.id === id);
   if (index === -1) throw new Error(`Listing ${id} not found`);
   listings[index] = { ...listings[index], ...data };
-  writeListings(listings);
+  await writeListings(listings);
   return listings[index];
 }
 
-export function remove(id: string): boolean {
-  const listings = readListings();
+export async function remove(id: string): Promise<boolean> {
+  const listings = await readListings();
   const next = listings.filter((p) => p.id !== id);
   if (next.length === listings.length) return false;
-  writeListings(next);
+  await writeListings(next);
   return true;
 }
 
-export function search(query: string): Property[] {
+export async function search(query: string): Promise<Property[]> {
   const q = query.toLowerCase();
-  return readListings().filter(
+  return (await readListings()).filter(
     (p) =>
       p.title.toLowerCase().includes(q) ||
       p.location.toLowerCase().includes(q) ||

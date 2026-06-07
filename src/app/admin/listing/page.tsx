@@ -13,8 +13,8 @@ const statusVariant: Record<PropertyStatus, "success" | "warning" | "muted"> = {
   inactive:  "muted",
 };
 
-export default function AdminListingPage() {
-  const listings = getAll();
+export default async function AdminListingPage() {
+  const listings = await getAll();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -45,27 +45,19 @@ export default function AdminListingPage() {
               <TableRow key={l.id}>
                 <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                 <TableCell>
-                  <Link
-                    href={`/properties/${l.slug}`}
-                    className="font-medium hover:underline"
-                  >
+                  <Link href={`/properties/${l.slug}`} className="font-medium hover:underline">
                     {l.title}
                   </Link>
                 </TableCell>
                 <TableCell className="capitalize">{l.type}</TableCell>
                 <TableCell>
-                  <Badge
-                    label={l.status}
-                    variant={statusVariant[l.status]}
-                  />
+                  <Badge label={l.status} variant={statusVariant[l.status]} />
                 </TableCell>
                 <TableCell>{l.location}</TableCell>
                 <TableCell className="text-right">
                   {l.price.toLocaleString()} <span className="text-muted-foreground text-xs">BDT</span>
                 </TableCell>
-                <TableCell className="text-center">
-                  {l.bedrooms} / {l.bathrooms}
-                </TableCell>
+                <TableCell className="text-center">{l.bedrooms} / {l.bathrooms}</TableCell>
                 <TableCell className="text-right">
                   {l.area} <span className="text-muted-foreground text-xs">sqft</span>
                 </TableCell>

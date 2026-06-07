@@ -8,7 +8,7 @@ import type { PropertyStatus } from "@/types/property";
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return getAll().map((l) => ({ slug: l.slug }));
+  return (await getAll()).map((l) => ({ slug: l.slug }));
 }
 
 export async function generateMetadata({
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const listing = getBySlug(slug);
+  const listing = await getBySlug(slug);
   return { title: listing ? `${listing.title} — Bhola Rental` : "Not Found" };
 }
 
@@ -43,17 +43,15 @@ export default async function PropertyDetailsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const listing = getBySlug(slug);
+  const listing = await getBySlug(slug);
   if (!listing) notFound();
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
-      {/* Image placeholder */}
       <div className="w-full h-64 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground text-sm">
         No images available
       </div>
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold leading-tight">{listing.title}</h1>
@@ -70,7 +68,6 @@ export default async function PropertyDetailsPage({
         </div>
       </div>
 
-      {/* Price */}
       <div className="rounded-xl border bg-card p-4 flex items-center justify-between">
         <span className="text-muted-foreground text-sm">Monthly Rent</span>
         <span className="text-2xl font-bold">
@@ -79,7 +76,6 @@ export default async function PropertyDetailsPage({
         </span>
       </div>
 
-      {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Stat icon={<BedDouble className="h-5 w-5" />} label="Bedrooms"  value={String(listing.bedrooms)} />
         <Stat icon={<Bath className="h-5 w-5" />}      label="Bathrooms" value={String(listing.bathrooms)} />
@@ -87,13 +83,11 @@ export default async function PropertyDetailsPage({
         <Stat icon={<Tag className="h-5 w-5" />}       label="Type"      value={listing.type} />
       </div>
 
-      {/* Description */}
       <div className="space-y-2">
         <h2 className="font-semibold">About this property</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">{listing.description}</p>
       </div>
 
-      {/* Footer meta */}
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground border-t pt-4">
         <CalendarDays className="h-3.5 w-3.5" />
         <span>Listed on {new Date(listing.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
